@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  @apply font-roboto text-white;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+  appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+*::-webkit-scrollbar {
+  width: 0.2rem;
+  background-color: transparent;
+}
+
+*::-webkit-scrollbar-track {
+  width: 0.2rem;
+  @apply bg-dark;
+}
+
+*::-webkit-scrollbar-thumb {
+  width: 0.2rem;
+  @apply bg-primary;
+}
