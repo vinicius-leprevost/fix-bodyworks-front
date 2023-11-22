@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { z } from "zod";
 export default function Page() {
   const router = useRouter();
@@ -96,9 +97,14 @@ export default function Page() {
           "Content-Type": "application/json",
           "access-control-allow-origin": "*",
         },
-      }).finally(() => {
+      })
+      .then( (res) => { 
+
+        if(res.status !== 200){
+          return toast.error("Falha ao trocar senha!")
+        }        
         router.push("/");
-      });
+       })
     }
   };
 

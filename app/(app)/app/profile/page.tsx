@@ -74,16 +74,16 @@ export default function Page() {
         authorization: `Bearer ${cookie}`,
       },
     })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.statusCode !== 200)
+      .then(async (res) => {
+        if (res.status !== 200){
           return toast.error("Erro ao alterar as informações!");
-
+        }
         toast.success("Informações alteradas com sucesso!");
-        setUser(res.data);
+        const data = await res.json();
+        setUser(data.data);
         router.push("/app");
+        methods.reset({ id: user?.id, password: "" })
       })
-      .then(() => methods.reset({ id: user?.id, password: "" }));
   };
   const methodsPassword = useForm<IFormPassword>({
     resolver: zodResolver(schemaPassword),
@@ -108,12 +108,12 @@ export default function Page() {
         authorization: `Bearer ${cookies.get("at")}`,
       },
     })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.statusCode !== 200) {
+      .then(async (res) => {
+        if (res.status !== 200) {
           return toast.error("Erro ao alterar a senha!");
         }
           toast.success("Senha alterada com sucesso!");
+        const data = await res.json();
         methodsPassword.reset({
           id: user?.id,
           oldPassword: "",

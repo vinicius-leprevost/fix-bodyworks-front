@@ -22,11 +22,9 @@ type IForm = {
   userId: number;
   instructorId: string;
 };
-
 export default function Page() {
   const params = useParams();
   const router = useRouter();
-
   const { user } = useContext(AuthContext);
   const methods = useForm<IForm>({
     defaultValues: async () => {
@@ -38,15 +36,20 @@ export default function Page() {
           authorization: "Bearer " + at,
         },
       })
-        .then((res) => res.json())
-        .then((res) => res.data);
+        .then(async (res) => {
+          if(res.status !== 200){
+            return toast.error("")
+          }
+          return await res.json()
+        });
+
       return {
-        id: payload.id,
-        name: payload.name,
-        active: payload.active,
-        sets: payload.sets,
-        userId: payload.userId,
-        instructorId: payload.instructorId,
+        id: payload.data.id,
+        name: payload.data.name,
+        active: payload.data.active,
+        sets: payload.data.sets,
+        userId: payload.data.userId,
+        instructorId: payload.data.instructorId,
       };
     },
   });

@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import cookies from "js-cookie";
 import Image from "next/image";
 import { memo, useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const days = [
   "SUNDAY",
@@ -32,10 +33,13 @@ export default function Page() {
         authorization: `Bearer ${at}`,
       },
     })
-      .then((res) => res.json())
-      .then((res) => {
+      .then(async (res) => {
+        if(res.status !== 200){
+          return toast.error("Erro ao buscar os treinos do dia!")
+        }
+        const data = await res.json();
         setSets(
-          res.data.filter(
+          data.data.filter(
             (set: SetModel) => !set.deletedAt && set.workout?.active === true
           )
         );

@@ -46,18 +46,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
         body: JSON.stringify(data),
       })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.statusCode === 400 || res.statusCode === 500) {
+        .then( async (res) => {
+
+          if( res.status !== 200){
             return toast.error("E-mail ou senha incorreto!");
           }
-          setUser(res.data.user);
-          cookies.set("rt", res.data.refreshToken, {
+          const data = await res.json()
+
+          setUser(data.data.user);
+          cookies.set("rt", data.data.refreshToken, {
             expires: 60 * 60 * 24 * 7,
           });
-          cookies.set("at", res.data.accessToken, { expires: 60 * 60 });
+          cookies.set("at", data.data.accessToken, { expires: 60 * 60 });
           router.push("/app");
-        });
+
+        })
+
     } catch (err) {
       toast.error("Erro ao fazer login!");
     }
@@ -77,14 +81,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           "access-control-allow-origin": "*",
         },
       })
-        .then((res) => res.json())
-        .then((res) => {
-          cookies.set("rt", res.data.refreshToken, {
+        .then( async (res) => {
+
+          if(res.status !== 200){
+            return signOut()
+          }
+        
+          const data = await res.json()
+        
+          cookies.set("rt", data.data.refreshToken, {
             expires: 60 * 60 * 24 * 7,
           });
-          cookies.set("at", res.data.accessToken, { expires: 60 * 60 });
-          setUser(res.data.user);
-        });
+          cookies.set("at", data.data.accessToken, { expires: 60 * 60 });
+          setUser(data.data.user);
+        
+        })
   }
 
   async function signOut() {
@@ -104,23 +115,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
         body: JSON.stringify(data),
       })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.statusCode === 400 || res.statusCode === 500) {
-            cookies.remove("rt");
-            cookies.remove("at");
-            throw new Error("Dados já cadastrados");
-          }
-          setUser(res.data.user);
+        .then( async (res) => {
+          
+        if( res.status !== 201){
+          return toast.error("Dados já cadastrados");
+        }
+          const data = await res.json()
 
-          cookies.set("rt", res.data.refreshToken, {
+          setUser(data.data.user);
+
+          cookies.set("rt", data.data.refreshToken, {
             expires: 60 * 60 * 24 * 7,
           });
-          cookies.set("at", res.data.accessToken, { expires: 60 * 60 });
+          cookies.set("at", data.data.accessToken, { expires: 60 * 60 });
           router.push("/app");
-        });
+        
+        })
     } catch (err) {
-      toast.error("Dados já cadastrados");
+      toast.error("Erro ao realizar requisição!");
     }
   }
 

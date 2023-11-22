@@ -4,6 +4,7 @@ import { User } from "@/models/user";
 import { env } from "@/utils/env";
 import cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Page() {
   const [instructors, setInstructors] = useState<User[]>();
@@ -18,11 +19,15 @@ export default function Page() {
           authorization: `Bearer ${at}`,
         },
       })
-        .then((res) => res.json())
-        .then((res: { data: User[] }) =>
+        .then(async (res) =>{
+          if( res.status !== 200){
+            toast.error("Erro ao buscar instrutores!")
+          }
+          const data: { data: User[] } = await res.json(); 
           setInstructors(
-            res.data.filter((e) => e.role === "INSTRUCTOR" && !e.deletedAt)
+            data.data.filter((e) => e.role === "INSTRUCTOR" && !e.deletedAt)
           )
+        }
         );
     }
     t();

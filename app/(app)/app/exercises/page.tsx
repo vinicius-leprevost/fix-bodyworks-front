@@ -5,6 +5,7 @@ import { Exercise } from "@/models/exercise";
 import { env } from "@/utils/env";
 import cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Page() {
   const [exercise, setExercise] = useState<Exercise[]>();
@@ -18,9 +19,14 @@ export default function Page() {
           authorization: "Bearer " + at,
         },
       })
-        .then((res) => res.json())
-        .then((res: { data: Exercise[] }) =>
-          setExercise(res.data.filter((e) => !e.deletedAt))
+        .then( async (res) => {
+
+          if(res.status !== 200){
+            return toast.error("Erro ao buscar exercícios!")
+          }
+          const data: { data: Exercise[] } = await res.json()
+          setExercise(data.data.filter((e) => !e.deletedAt))
+        }
         );
     }
     t();

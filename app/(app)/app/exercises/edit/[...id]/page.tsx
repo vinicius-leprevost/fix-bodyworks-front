@@ -66,16 +66,16 @@ export default function Page() {
         authorization: `Bearer ${cookie}`,
       },
     })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.statusCode !== 200) {
+      .then( async (res) => {
+        if( res.status !== 200){
           return toast.error("Erro ao cadastrar exercício!");
         }
-        methods.reset({ name: "", description: "" });
-        router.push("/app/exercises");
+      const data = await res.json()
+      methods.reset({ name: "", description: "" });
+      router.push("/app/exercises");
       })
       .catch((err) => {
-        return toast.error("Erro ao cadastrar exercício!");
+        return toast.error("Erro ao realizar requisição!");
       });
   };
 

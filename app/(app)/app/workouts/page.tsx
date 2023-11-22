@@ -7,6 +7,7 @@ import { env } from "@/utils/env";
 import { AnimatePresence, motion } from "framer-motion";
 import cookies from "js-cookie";
 import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Page() {
   const { user } = useContext(AuthContext);
@@ -22,9 +23,12 @@ export default function Page() {
         authorization: `Bearer ${at}`,
       },
     })
-      .then((res) => res.json())
-      .then((res) => {
-        setWorkouts(res.data);
+      .then(async (res) => {
+        if(res.status !== 200){
+         return toast.error("Erro ao buscar treinos!")
+        }
+        const data = await res.json();
+        setWorkouts(data.data);
       });
   };
   const z = async function () {
@@ -37,9 +41,12 @@ export default function Page() {
         authorization: `Bearer ${at}`,
       },
     })
-      .then((res) => res.json())
-      .then((res) => {
-        setWorkouts(res.data);
+      .then(async (res) => {
+        if(res.status !== 200){
+          return toast.error("Erro ao buscar treinos!")
+        }
+        const data = await res.json();
+        setWorkouts(data.data);
       });
   };
 

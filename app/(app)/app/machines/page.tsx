@@ -4,6 +4,7 @@ import { Machine } from "@/models/machine";
 import { env } from "@/utils/env";
 import cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Page() {
   const [machines, setMachines] = useState<Machine[]>();
@@ -17,9 +18,13 @@ export default function Page() {
           authorization: `Bearer ${at}`,
         },
       })
-        .then((res) => res.json())
-        .then((res: { data: Machine[] }) =>
-          setMachines(res.data.filter((e) => !e.deletedAt))
+        .then(async (res) =>{
+          if(res.status !== 200){
+           return toast.error("Erro ao buscar maquina!") 
+          }
+          const data: { data: Machine[] } = await res.json()
+          setMachines(data.data.filter((e) => !e.deletedAt))
+        }
         );
     }
     t();

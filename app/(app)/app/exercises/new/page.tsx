@@ -36,17 +36,18 @@ export default function Page() {
           authorization: `Bearer ${cookie}`,
         },
       })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.statusCode !== 201) {
+        .then( async (res) => { 
+
+          const data = await res.json()
+          
+          if (res.status !== 201) {
             return toast.error("Erro ao cadastrar o exercício!");
           }
           toast.success("Exercício cadastrado com sucesso!");
-
           methods.reset({ name: "", description: "" });
         });
     } catch (err) {
-      toast.error("Erro ao cadastrar o exercício!");
+      toast.error("Erro ao realizar a requisição!");
     }
   };
 

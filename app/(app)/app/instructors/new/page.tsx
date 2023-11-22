@@ -8,6 +8,7 @@ import { AnimatePresence } from "framer-motion";
 import cookies from "js-cookie";
 import { useContext } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { z } from "zod";
 
 export default function Page() {
@@ -31,8 +32,14 @@ export default function Page() {
         authorization: `Bearer ${cookie}`,
       },
     })
-      .then((res) => res.json())
-      .then(() => methods.reset({ hash: undefined }));
+      .then((res) => {{
+        if(res.status !== 201){
+          return toast.error("Erro ao tornar instrutor!")
+        }
+      }
+      methods.reset({ hash: undefined })
+  
+    });
   };
 
   return (

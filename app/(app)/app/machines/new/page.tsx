@@ -34,12 +34,12 @@ export default function Page() {
         authorization: `Bearer ${cookie}`,
       },
     })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.statusCode !== 201) {
+      .then(async (res) => {
+        if (res.status !== 201) {
           toast.error("Erro ao cadastrar o equipamento!");
         }
         toast.success("Equipamento cadastrado com sucesso!");
+        const data = await res.json();
         methods.reset({ name: "" });
         router.push("/app/machines");
       });

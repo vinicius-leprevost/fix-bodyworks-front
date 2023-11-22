@@ -4,6 +4,7 @@ import { User } from "@/models/user";
 import { env } from "@/utils/env";
 import cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Page() {
   const [users, setUsers] = useState<User[]>();
@@ -18,11 +19,14 @@ export default function Page() {
           authorization: `Bearer ${at}`,
         },
       })
-        .then((res) => res.json())
-        .then((res: { data: User[] }) =>
-          setUsers(res.data.filter((e) => e.role === "USER" && !e.deletedAt))
-        );
-    }
+        .then(async (res) => {
+            if(res.status !== 200){
+            return toast.error("Erro ao buscar usuários!")
+          }
+          const data: { data: User[] } = await res.json();
+          setUsers(data.data.filter((e) => e.role === "USER" && !e.deletedAt))
+        });
+      };  
     t();
   }, []);
 

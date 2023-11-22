@@ -35,15 +35,15 @@ export default function Page() {
         authorization: `Bearer ${at}`,
       },
     })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.statusCode !== 200) {
+      .then(async (res) => {
+        if (res.status !== 200) {
           return toast.error("Erro ao atualizar o equipamento!");
         }
+        const data = await res.json()
         router.push("/app/machines");
       })
       .catch((err) => {
-        return toast.error("Erro ao atualizar o equipamento!");
+        return toast.error("Erro ao realizar requisição!");
       });
   }
   return (
