@@ -67,6 +67,7 @@ export default function Page() {
         methods3.setValue("email", data.email);
         setTimeout(() => {
           setCode(undefined);
+          router.push("/");
         }, 60000);
       })
       .then(() => setSteps(2));
