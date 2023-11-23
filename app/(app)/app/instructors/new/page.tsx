@@ -31,14 +31,12 @@ export default function Page() {
         "access-control-allow-origin": "*",
         authorization: `Bearer ${cookie}`,
       },
-    })
-      .then((res) => {{
-        if(res.status !== 201){
-          return toast.error("Erro ao tornar instrutor!")
-        }
+    }).then((res) => {
+      if (res.status !== 200) {
+        return toast.error("Código do usuário não existe!");
       }
-      methods.reset({ hash: undefined })
-  
+      toast.success("Instrutor cadastrado com sucesso!");
+      methods.resetField("hash", { keepDirty: false });
     });
   };
 

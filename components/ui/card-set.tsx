@@ -30,15 +30,15 @@ export function CardSet({
         "access-control-allow-origin": "*",
         authorization: `Bearer ${at}`,
       },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.statusCode !== 200) {
-          return toast.error("Erro ao finalizar exercício!");
-        }
-
-        setMFinished(true);
-      });
+    }).then((res) => {
+      console.log(res);
+      if (res.status !== 201) {
+        return toast.error("Erro ao finalizar exercício!");
+      }
+      toast.success("Exercício finalizado com sucesso!");
+      setMFinished(true);
+      return;
+    });
   };
 
   const [mFinished, setMFinished] = useState(finished);

@@ -35,13 +35,12 @@ export default function Page() {
           "content-type": "application/json",
           authorization: "Bearer " + at,
         },
-      })
-        .then(async (res) => {
-          if(res.status !== 200){
-            return toast.error("")
-          }
-          return await res.json()
-        });
+      }).then(async (res) => {
+        if (res.status !== 200) {
+          return toast.error("");
+        }
+        return await res.json();
+      });
 
       return {
         id: payload.data.id,
@@ -86,16 +85,14 @@ export default function Page() {
         "Content-Type": "application/json",
         authorization: `Bearer ${at}`,
       },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.statusCode !== 200) {
-          return toast.error("Erro ao atualizar o treino!");
-        }
-        toast.success("Treino atualizado com sucesso!");
-        methods.reset({});
-        router.push("/app/workouts");
-      });
+    }).then((res) => {
+      if (res.status !== 200) {
+        return toast.error("Erro ao atualizar o treino!");
+      }
+      toast.success("Treino atualizado com sucesso!");
+      methods.reset({});
+      router.push("/app/workouts");
+    });
   };
 
   const { append, fields, remove } = useFieldArray({

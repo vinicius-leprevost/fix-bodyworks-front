@@ -34,17 +34,15 @@ export default function Page() {
         "access-control-allow-origin": "*",
         authorization: `Bearer ${cookie}`,
       },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.statusCode !== 200) {
-          return toast.error("Código do usuário não existe!");
-        } else {
-          toast.success("Administrador cadastrado com sucesso!");
-        }
+    }).then((res) => {
+      if (res.status !== 200) {
+        return toast.error("Código do usuário não existe!");
+      } else {
+        toast.success("Administrador cadastrado com sucesso!");
+      }
 
-        methods.reset({ hash: undefined });
-      });
+      methods.resetField("hash", { keepDirty: false });
+    });
   };
 
   return (

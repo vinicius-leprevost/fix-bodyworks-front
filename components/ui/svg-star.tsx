@@ -4,6 +4,7 @@ import { env } from "@/utils/env";
 import { motion } from "framer-motion";
 import cookies from "js-cookie";
 import { Dispatch, SetStateAction, useContext } from "react";
+import { toast } from "react-toastify";
 
 export const SVGStar = ({
   stars,
@@ -17,35 +18,46 @@ export const SVGStar = ({
   setStars: Dispatch<SetStateAction<number>>;
 }) => {
   const { refreshToken } = useContext(AuthContext);
+  async function updateStars() {
+    if (stars === index) {
+      setStars(0);
+      const at = cookies.get("at");
+      await fetch(env.api + `/history`, {
+        method: "PATCH",
+        body: JSON.stringify({ stars: 0, id }),
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${at}`,
+        },
+      });
+      await refreshToken();
+    } else {
+      setStars(index);
+      const at = cookies.get("at");
+      await fetch(env.api + `/history`, {
+        method: "PATCH",
+        body: JSON.stringify({ stars: index, id }),
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${at}`,
+        },
+      }).then((res) => {
+        console.log(res);
+        if (res.status !== 200) {
+          return toast.error("Erro ao atualizar o feedback!");
+        }
+        toast.success("Feedback atualizado com sucesso!");
+
+        refreshToken();
+        return;
+      });
+    }
+  }
   return (
     <motion.svg
-      onClick={async (e) => {
+      onClick={(e) => {
         e.preventDefault();
-        if (stars === index) {
-          setStars(0);
-          const at = cookies.get("at");
-          await fetch(env.api + `/history`, {
-            method: "PATCH",
-            body: JSON.stringify({ stars: 0, id }),
-            headers: {
-              "Content-Type": "application/json",
-              authorization: `Bearer ${at}`,
-            },
-          });
-          await refreshToken();
-        } else {
-          setStars(index);
-          const at = cookies.get("at");
-          await fetch(env.api + `/history`, {
-            method: "PATCH",
-            body: JSON.stringify({ stars: index, id }),
-            headers: {
-              "Content-Type": "application/json",
-              authorization: `Bearer ${at}`,
-            },
-          });
-          await refreshToken();
-        }
+        updateStars();
       }}
       layout
       initial={{ opacity: 0, scale: 1.3, width: "2rem", height: "2rem" }}

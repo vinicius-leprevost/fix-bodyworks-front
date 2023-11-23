@@ -27,6 +27,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -126,26 +127,22 @@ export default function Page() {
         "access-control-allow-origin": "*",
         authorization: `Bearer ${at}`,
       },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.statusCode !== 200) {
-          return toast.error("Erro ao deletar a avaliação!");
-        }
-        toast.success("Avaliação deletada com sucesso!");
-        reloadData();
-      });
+    }).then((res) => {
+      if (res.status !== 200) {
+        return toast.error("Erro ao deletar a avaliação!");
+      }
+      toast.success("Avaliação deletada com sucesso!");
+      reloadData();
+    });
   };
 
   const [data, setData] = useState<History[]>(user?.history || []);
 
   useEffect(() => {
-    if (user && user.history.length > 0) setData(user.history);
+    if (user) setData(user.history);
   }, [user]);
 
-  const reloadData = async () => {
-    await refreshToken();
-  };
+  const router = useRouter();
 
   const table = useReactTable({
     data,
@@ -165,6 +162,10 @@ export default function Page() {
       rowSelection,
     },
   });
+
+  const reloadData = async () => {
+    await refreshToken();
+  };
 
   useEffect(() => {
     console.log(rowSelection);
@@ -186,21 +187,25 @@ export default function Page() {
           "access-control-allow-origin": "*",
           authorization: `Bearer ${at}`,
         },
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.statusCode !== 200) {
-            return errors++;
-          }
-          success++;
-        });
+      }).then((res) => {
+        if (res.status !== 200) {
+          return errors++;
+        }
+        success++;
+      });
     }
-    if (errors > 0) {
-      toast.error(`${errors} Erro ao deletar as avaliações!`);
+    if (errors > 1) {
+      toast.error(`${errors} erros ao deletar as avaliações!`);
+    }
+    if (errors > 0 && errors < 2) {
+      toast.error(`Erro ao deletar a avaliação!`);
     }
 
-    if (success > 0) {
-      toast.success(`${success} Avaliações deletadas com sucesso!`);
+    if (success > 1) {
+      toast.success(`${success} avaliações deletadas com sucesso!`);
+    }
+    if (success > 0 && success < 2) {
+      toast.success(`Avaliação deletada com sucesso!`);
     }
     reloadData();
   }
